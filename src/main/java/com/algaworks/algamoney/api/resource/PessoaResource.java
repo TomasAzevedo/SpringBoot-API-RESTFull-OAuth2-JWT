@@ -3,13 +3,13 @@
  */
 package com.algaworks.algamoney.api.resource;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algamoney.api.event.RecursoCriadoEvent;
 import com.algaworks.algamoney.api.facade.PessoaServiceFacade;
 import com.algaworks.algamoney.api.model.Pessoa;
+import com.algaworks.algamoney.api.repository.filter.PessoaFilter;
 
 /**
  * @author Tomás
@@ -44,9 +45,9 @@ public class PessoaResource {
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
-	public List<Pessoa> listar() {
+	public Page<Pessoa> listar(PessoaFilter pessoaFilter, Pageable pageable) {
 		
-		return pessoaServiceFacade.listar();
+		return pessoaServiceFacade.listar(pessoaFilter, pageable);
 		
 	}
 	

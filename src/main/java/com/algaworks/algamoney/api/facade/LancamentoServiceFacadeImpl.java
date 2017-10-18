@@ -3,6 +3,7 @@
  */
 package com.algaworks.algamoney.api.facade;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -88,6 +89,43 @@ public class LancamentoServiceFacadeImpl implements LancamentoServiceFacade {
 	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
 
 		return lancamentoRepository.resumir(lancamentoFilter, pageable);
+	}
+	
+	
+	
+	@Override
+	public Lancamento atualizar(Long codigo, Lancamento lancamento) {
+		Lancamento lancamentoSalvo = buscarLancamentoExistente(codigo);
+		if (!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
+			validarPessoa(lancamento);
+		}
+
+		BeanUtils.copyProperties(lancamento, lancamentoSalvo, "codigo");
+
+		return lancamentoRepository.save(lancamentoSalvo);
+	}
+	
+	
+	
+	private void validarPessoa(Lancamento lancamento) {
+		Pessoa pessoa = null;
+		if (lancamento.getPessoa().getCodigo() != null) {
+			pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
+		}
+
+		if (pessoa == null || pessoa.getAtivo()) {
+			throw new PessoaInexistenteOuInativaException();
+		}
+	}
+	
+	
+
+	private Lancamento buscarLancamentoExistente(Long codigo) {
+		Lancamento lancamentoSalvo = lancamentoRepository.findOne(codigo);
+		if (lancamentoSalvo == null) {
+			throw new IllegalArgumentException();
+		}
+		return lancamentoSalvo;
 	}
 
 
