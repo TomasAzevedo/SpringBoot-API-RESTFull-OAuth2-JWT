@@ -14,7 +14,7 @@ public class AlgaMoneyApiProperty {
 	
 	private final Seguranca seguranca = new Seguranca();
 	
-	private String origemPermitida = "http://localhost:8080";
+	private String origemPermitida = "http://localhost:4200";
 	
 	public Seguranca getSeguranca() {
 		return seguranca;

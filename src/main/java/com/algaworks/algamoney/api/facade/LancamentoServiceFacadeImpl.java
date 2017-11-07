@@ -113,7 +113,7 @@ public class LancamentoServiceFacadeImpl implements LancamentoServiceFacade {
 			pessoa = pessoaRepository.findOne(lancamento.getPessoa().getCodigo());
 		}
 
-		if (pessoa == null || pessoa.getAtivo()) {
+		if (pessoa == null || !pessoa.getAtivo()) {
 			throw new PessoaInexistenteOuInativaException();
 		}
 	}
